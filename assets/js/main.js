@@ -82,8 +82,11 @@ function slideNext() {
 }
 
 function firstArrangeSlides() {
-  // if slide progress === the scrollable width minus two slide width
-  // that is if the slide has reached the end, update the slide
+  // if slide progress === the minus scrollable width minus two slide width
+  // if remeber SCROLLABLE WIDTH is all the slides with minus/without 3 of the slide
+  // that is the two duplicate slides and the slide currently in view
+  // here im adding back the width of the duplicate slide
+  // in short, if the slide has reached the end, update the slide
   // remove the transition and jump back to start
   if (slideProgress === -SCROLLABLE_WIDTH - SLIDE_WIDTH * 2) {
     slideProgress = -SLIDE_WIDTH;
@@ -96,26 +99,8 @@ function firstArrangeSlides() {
   }
 }
 
-function lastArrangeSlides() {
-  // if slide progress === the scrollable width minus two slide width
-  // that is if the slide has reached the end, update the slide
-  // remove the transition and jump back to start
-  if (slideProgress === -SCROLLABLE_WIDTH - SLIDE_WIDTH * 2) {
-    slideProgress = -SLIDE_WIDTH;
-    updateSlides(false);
-    //other way around if slideProgress is at the beginning
-    //just to the end of the slide
-  }
-  // else if (slideProgress === 0) {
-  //   slideProgress = -SCROLLABLE_WIDTH - SLIDE_WIDTH;
-  //   updateSlides(false);
-  // }
-}
-
 // this is called everytime a slide transition ends
 FIRST_DUPLICATE_SLIDE.addEventListener("transitionend", firstArrangeSlides);
-
-LAST_DUPLICATE_SLIDE.addEventListener("transitionend", lastArrangeSlides);
 
 function updateSlides(transition) {
   slides.forEach((slide) => {
