@@ -7,16 +7,21 @@
 const wrapper = document.querySelector(".wrapper");
 // grabs the two caret for slide control
 const carets = wrapper.querySelectorAll("button");
-// grabs all the slides availbale
-const slides = wrapper.querySelectorAll(".wrapper .carousel img");
 // grabs the container for the slide
 const slider = wrapper.querySelector(".slider");
 
+// Here im duplicating the first and last nodes of the images
+// im putting the duplicate of the first at the bottom of the list
+// and the duplicate of the last at the first on the list
 // duplicate slide will be needed for the loop effect
-const FIRST_DUPLICATE_SLIDE = slides[0];
-const LAST_DUPLICATE_SLIDE = slides[slides.length - 1];
-// this could be any of the slide, just needed one of the slides
-// as all slides behave the exact same way
+const FIRST_DUPLICATE_SLIDE = slider.firstElementChild.cloneNode();
+const LAST_DUPLICATE_SLIDE = slider.lastElementChild.cloneNode();
+slider.append(FIRST_DUPLICATE_SLIDE);
+slider.prepend(LAST_DUPLICATE_SLIDE);
+
+// grabs all the slides availbale, including the duplicates
+const slides = slider.querySelectorAll("img");
+
 const FIRST_INDEX_SLIDE = slides[1];
 // width of each slide
 const SLIDE_WIDTH = FIRST_INDEX_SLIDE.clientWidth;
@@ -26,7 +31,7 @@ const SLIDER_WIDTH = slider.clientWidth;
 const ALL_SLIDE_WIDTH = SLIDE_WIDTH * slides.length;
 // width of the part container that can be scrolled
 // that is width of all the slides, minus the width of the container, minus
-// the width of one slide, as at least one slide is visible at a time
+// the width of one slide and the widths of the 2 duplicates, as at least one slide is visible at a time
 const SCROLLABLE_WIDTH = ALL_SLIDE_WIDTH - SLIDER_WIDTH * 3;
 // just getting the transform property value that was set in css
 const DEFAULT_TRANSITION = window.getComputedStyle(slides[0]).transition;
