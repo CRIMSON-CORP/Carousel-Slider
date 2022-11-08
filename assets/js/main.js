@@ -3,12 +3,6 @@
 // and and setting the image to be displayed based on the slide index
 // i just wanted it to be animated
 
-//the major issue with my approach is that, it requires more lines of code
-// and a lot of time to learn
-// and user cannot scroll back to the first slide only
-// if they went to the last slide from the first slide
-// (i.e, pressing previous when on the first slide)
-
 // grabs the wrapper div
 const wrapper = document.querySelector(".wrapper");
 // grabs the two caret for slide control
@@ -19,7 +13,8 @@ const slides = wrapper.querySelectorAll(".wrapper .carousel img");
 const slider = wrapper.querySelector(".slider");
 
 // duplicate slide will be needed for the loop effect
-const DUPLICATE_SLIDE = slides[0];
+const FIRST_DUPLICATE_SLIDE = slides[0];
+const LAST_DUPLICATE_SLIDE = slides[slides.length - 1];
 // this could be any of the slide, just needed one of the slides
 // as all slides behave the exact same way
 const FIRST_INDEX_SLIDE = slides[1];
@@ -32,7 +27,7 @@ const ALL_SLIDE_WIDTH = SLIDE_WIDTH * slides.length;
 // width of the part container that can be scrolled
 // that is width of all the slides, minus the width of the container, minus
 // the width of one slide, as at least one slide is visible at a time
-const SCROLLABLE_WIDTH = ALL_SLIDE_WIDTH - SLIDER_WIDTH - SLIDE_WIDTH;
+const SCROLLABLE_WIDTH = ALL_SLIDE_WIDTH - SLIDER_WIDTH * 3;
 // just getting the transform property value that was set in css
 const DEFAULT_TRANSITION = window.getComputedStyle(slides[0]).transition;
 
@@ -65,7 +60,7 @@ carets.forEach((caret) => {
     if (e.target.id === "prev" && slideProgress <= 0) {
       slidePrev();
       // if next button is pressed and there are slides to scoll to in front, slideNext..
-    } else if (e.target.id === "next" && slideProgress >= -SCROLLABLE_WIDTH) {
+    } else if (e.target.id === "next" && slideProgress >= -SCROLLABLE_WIDTH - SLIDER_WIDTH) {
       slideNext();
       // else do nothing
     } else return;
@@ -86,12 +81,12 @@ function slideNext() {
   updateSlides(true);
 }
 
-function arrangeSlides() {
-  // if slide progress === the scrollable width minus a slide width
+function firstArrangeSlides() {
+  // if slide progress === the scrollable width minus two slide width
   // that is if the slide has reached the end, update the slide
   // remove the transition and jump back to start
-  if (slideProgress === -SCROLLABLE_WIDTH - SLIDE_WIDTH) {
-    slideProgress = 0;
+  if (slideProgress === -SCROLLABLE_WIDTH - SLIDE_WIDTH * 2) {
+    slideProgress = -SLIDE_WIDTH;
     updateSlides(false);
     //other way around if slideProgress is at the beginning
     //just to the end of the slide
@@ -101,8 +96,26 @@ function arrangeSlides() {
   }
 }
 
+function lastArrangeSlides() {
+  // if slide progress === the scrollable width minus two slide width
+  // that is if the slide has reached the end, update the slide
+  // remove the transition and jump back to start
+  if (slideProgress === -SCROLLABLE_WIDTH - SLIDE_WIDTH * 2) {
+    slideProgress = -SLIDE_WIDTH;
+    updateSlides(false);
+    //other way around if slideProgress is at the beginning
+    //just to the end of the slide
+  }
+  // else if (slideProgress === 0) {
+  //   slideProgress = -SCROLLABLE_WIDTH - SLIDE_WIDTH;
+  //   updateSlides(false);
+  // }
+}
+
 // this is called everytime a slide transition ends
-DUPLICATE_SLIDE.addEventListener("transitionend", arrangeSlides);
+FIRST_DUPLICATE_SLIDE.addEventListener("transitionend", firstArrangeSlides);
+
+LAST_DUPLICATE_SLIDE.addEventListener("transitionend", lastArrangeSlides);
 
 function updateSlides(transition) {
   slides.forEach((slide) => {
